@@ -8,13 +8,19 @@
             <van-search v-model="value" shape="round" placeholder="请输入搜索关键词" />
         </div>
 
-        <van-swipe :autoplay="3000">
+        <van-swipe :autoplay="3000" style="width: 96.5%;">
             <van-swipe-item v-for="image in hospitalData.slides" :key="image">
                 <img :src="image.pic_image_url" class="images" />
             </van-swipe-item>
         </van-swipe>
-        <div v-for="item in hospitalData.hospitals" :key="item.id" class="item">
-            <div class="card">
+
+        <div class="nav">
+            <img :src="item.pic_image_url" alt="" @click="addrouter(index)" v-for="(item, index) in  hospitalData.nav2s"
+                :key="item.id">
+
+        </div>
+        <div v-for="(item, index) in hospitalData.hospitals" :key="item.id" class="item">
+            <div class="card" @click="addDeail(item)">
                 <van-image width="8rem" height="5.6rem" :src="item.avatar_url" />
                 <div class="right-txt">
                     <h3>{{ item.name }}</h3>
@@ -32,12 +38,10 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { getHomeInfo } from '../../api/home/index'
-const images = [
-    'https://fastly.jsdelivr.net/npm/@vant/assets/apple-1.jpeg',
-    'https://fastly.jsdelivr.net/npm/@vant/assets/apple-2.jpeg',
-    'https://fastly.jsdelivr.net/npm/@vant/assets/apple-2.jpeg',
-];
+
+const router = useRouter()
 const hospitalData = ref({
     hospitals: [],
     nav2s: [],
@@ -46,6 +50,12 @@ const hospitalData = ref({
     slides: []
 })
 
+const addDeail = (item) => {
+    console.log(item.id);
+    const id = item.id
+    router.push(`/createOrder?hospital_id=${id}`)
+}
+
 const homeData = () => {
     getHomeInfo().then(({ data }) => {
         console.log(data);
@@ -53,6 +63,11 @@ const homeData = () => {
 
     })
 };
+const addrouter = (index) => {
+    const id = hospitalData.value.nav2s[index].id
+    router.push(`/createOrder?id=${id}`)
+
+}
 
 onMounted(() => {
     homeData()
@@ -62,9 +77,23 @@ onMounted(() => {
 <style scoped lang="less">
 .home {
     padding: 0px 6px;
+    padding-bottom: 50px;
     width: 100%;
     min-height: 100vh;
-    box-sizing: border-box;
+
+
+    .nav {
+        display: flex;
+        width: 96%;
+
+        justify-content: space-between;
+
+
+        img {
+            width: 48%;
+
+        }
+    }
 
     .header {
         width: 100%;
@@ -101,7 +130,9 @@ onMounted(() => {
         display: flex;
         background: #fdfffd;
         margin: 10px 0px;
-
+        overflow: hidden;
+        box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.04), 0 1px 6px 0 rgba(0, 0, 0, 0.04);
+        padding-bottom: 10px;
 
         .right-txt {
             width: 90%;
