@@ -109,6 +109,17 @@
         <van-button type="primary" class="sumbit" size="large" @click="submit">提交</van-button>
 
 
+
+        <van-dialog v-model:show="showCenter" :show-confirm-button="false">
+            <van-icon name="cross" @click="closeCode" class="close" />
+            <div>微信支付</div>
+            <van-image :src="imgs" alt="" />
+            <div>请使用本人微信扫描二维码</div>
+        </van-dialog>
+        <!-- 
+        <van-popup v-model:show="showCenter" round :style="{ padding: '64px' }" click-overlay>
+            <img :src="imgs" alt="">
+        </van-popup> -->
     </div>
 </template>
 
@@ -119,6 +130,7 @@ import statusBar from '../../components/statusBar.vue';
 import { getCompanionList, createOrder } from '../../api/companion/index'
 import { onMounted, ref } from 'vue';
 import prettyLog from '../../hooks/index'
+import Qrcode from 'qrcode'
 
 
 
@@ -138,21 +150,38 @@ const form = ref({
     tel: "",
     starttime: 0
 })
-
+const showCenter = ref(false)
+const imgs = ref('')
 const submit = () => {
-    createOrder(form.value).then((res) => {
-        console.log(res);
+    const params = ['hospital_id', 'hospital_name', 'demand', 'companion_id', 'receiveAddress', 'tel', 'starttime']
+    console.log(form.value);
+    for (const i of params) {
+        if (!form.value[i]) {
+            console.log(form[i]);
+            showNotify({ message: '请把每一项都填写！' });
+            return
+        }
+    }
+    createOrder(form.value).then(({ data }) => {
+        // console.log(data);
+
+        Qrcode.toDataURL(data.data.wx_code).then(url => {
+            showCenter.value = true
+            imgs.value = url
+            console.log(url);
+        })
     })
 }
+const closeCode = () => {
+    showCenter.value = false
+    router.push('/order')
+}
 const onConfirm = (item) => {
-
     const activeItem = item.selectedOptions[0]
     form.value.hospital_name = activeItem.text
     form.value.hospital_id = activeItem.value
     console.log(form.value.hospital_id);
     result.value = item.selectedOptions[0]?.text;
-
-
     showPicker.value = false;
 };
 
