@@ -1,5 +1,10 @@
 <template>
     <div class="container">
+        <!-- <div class="header">
+            <van-icon @click="goBack" name="arrow-left" class="header-left" size="28"></van-icon>
+            填写服务订单
+        </div> -->
+        <headers title="填写服务订单"></headers>
         <statusBar item="0"></statusBar>
         <van-cell-group>
             <van-cell class="cell" title="单元格" value="">
@@ -131,6 +136,7 @@ import { getCompanionList, createOrder } from '../../api/companion/index'
 import { onMounted, ref } from 'vue';
 import prettyLog from '../../hooks/index'
 import Qrcode from 'qrcode'
+import headers from '../../components/headers.vue';
 
 
 
@@ -164,7 +170,6 @@ const submit = () => {
     }
     createOrder(form.value).then(({ data }) => {
         // console.log(data);
-
         Qrcode.toDataURL(data.data.wx_code).then(url => {
             showCenter.value = true
             imgs.value = url

@@ -79,7 +79,7 @@ onMounted(() => {
     padding: 0px 6px;
     padding-bottom: 50px;
     width: 100%;
-    min-height: 100vh;
+    height: 100vh;
 
 
     .nav {

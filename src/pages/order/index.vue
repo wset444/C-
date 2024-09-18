@@ -34,11 +34,11 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { orderList } from '../../api/order/index'
 import counter from '../../components/counter.vue'
 
-// const route = useRoute();
+const router = useRouter();
 const colorMap = {
     '待支付': '#ffa200',
     '待服务': '#1da6fd',
@@ -54,6 +54,7 @@ const onClickTab = (item) => {
 }
 
 const goDetail = (item) => {
+    router.push(`/detail?oid=${item.out_trade_no}`)
     console.log(item);
 }
 
