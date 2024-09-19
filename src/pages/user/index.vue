@@ -5,21 +5,80 @@
             <div class="text">
                 {{ UserINfo.name }}
             </div>
-            <van-button type="danger" @click="goback">退出</van-button>
-        </div>
 
+
+        </div>
+        <div class="order">
+            <div class="top">
+                <div class="text1">我的订单</div>
+                <div class="text1" @click="router.push('/order')">全部</div>
+            </div>
+            <div class="buttom">
+                <div class="item">
+                    <img @click="goOrder(1)" width="40" height="40" src="../user/image/od_10.png" />
+                    <div>待支付</div>
+                </div>
+                <div class="item">
+                    <img @click="goOrder(2)" width="40" height="40" src="../user/image/od_20.png" />
+                    <div>待服务</div>
+                </div>
+                <div class="item">
+                    <img @click="goOrder(3)" width="40" height="40" src="../user/image/od_30.png" />
+                    <div>已完成</div>
+                </div>
+                <div class="item">
+                    <img @click="goOrder(4)" width="40" height="40" src="../user/image/od_40.png" />
+                    <div>已取消</div>
+                </div>
+            </div>
+
+        </div>
+        <div class="foot">
+            <div class="foot1">
+                <div class="text1">
+                    <img width="20" height="20" src="../../assets/images/ic_clients.png" />
+                    服务对象管理
+                </div>
+                <div class="text2">
+                    <van-icon name="arrow"></van-icon>
+                </div>
+            </div>
+
+            <div class="foot2">
+                <div class="text1">
+                    <img width="20" height="20" src="../../assets/images/ic_share.png" />
+                    分享转发
+                </div>
+                <div class="text2">
+                    <van-icon name="arrow"></van-icon>
+                </div>
+            </div>
+        </div>
+        <van-button type="danger" @click="show = true" class="quit">退出登录</van-button>
+        <van-dialog v-model:show="show" title="提示" @confirm="onConfirm" show-cancel-button>
+            <div class="quit_text">
+                是否退出登录？
+            </div>
+
+        </van-dialog>
     </div>
 </template>
 
 <script setup>
 import { onMounted, ref } from "vue";
 import { useRouter } from 'vue-router'
-const UserINfo = ref({})
 const router = useRouter()
+const show = ref(false)
+const goOrder = (i) => {
+    console.log(i);
+    router.push(`/order?id=${i}`)
+}
+const UserINfo = ref({})
+
 onMounted(() => {
     UserINfo.value = JSON.parse(localStorage.getItem('h5_userInfo')) || {}
 })
-const goback = () => {
+const onConfirm = () => {
     localStorage.removeItem('h5_userInfo')
     localStorage.removeItem('h5_token')
     router.push('/login')
@@ -106,8 +165,8 @@ const goback = () => {
     }
 
     .quit {
-        width: 90%;
-        margin: 20px;
+        width: 94%;
+        margin: 20px 10px;
     }
 
     .quit_text {

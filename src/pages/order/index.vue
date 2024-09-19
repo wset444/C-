@@ -34,11 +34,13 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { orderList } from '../../api/order/index'
 import counter from '../../components/counter.vue'
 
+const active = ref('0')
 const router = useRouter();
+const route = useRoute()
 const colorMap = {
     '待支付': '#ffa200',
     '待服务': '#1da6fd',
@@ -73,7 +75,15 @@ const goorderList = (item) => {
 
 const orders = ref([])
 onMounted(() => {
-    goorderList()
+    console.log();
+    if (route.query.id) {
+        active.value = route.query.id.toString()
+
+        goorderList(route.query.id)
+    } else {
+        goorderList()
+    }
+
 })
 </script>
 
